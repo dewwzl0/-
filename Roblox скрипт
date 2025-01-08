@@ -1,0 +1,48 @@
+-- Get references to local player, character, and humanoid
+local player = game.Players.LocalPlayer
+local character = player.Character
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Flag to control platform standing state
+local isStandingOnPlatforms = false
+
+-- Function to toggle platform standing and adjust walk speed
+function togglePlatformStanding()
+  isStandingOnPlatforms = not isStandingOnPlatforms
+  humanoid.PlatformStand = isStandingOnPlatforms
+  humanoid.WalkSpeed = isStandingOnPlatforms and 0 or 16 -- Set walk speed to 0 when standing on platforms, 16 otherwise
+end
+
+-- Function to handle gamepad input (optional, remove if not needed)
+function handleGamepadInput(time)
+  if isStandingOnPlatforms then
+    local userInputService = game:GetService("UserInputService")
+    local camera = workspace.CurrentCamera
+    local lookVector = camera.CFrame.LookVector
+
+    -- Add your desired actions here using lookVector for camera look direction
+    -- (Example: print("Camera Look Vector:", lookVector))
+  end
+end
+
+-- Connect to UserInputService events
+UserInputService.InputChanged:Connect(function(input)
+  if input.UserInputType == Enum.UserInputType.Gamepad and isStandingOnPlatforms then
+    handleGamepadInput(tick())
+  end
+end)
+
+UserInputService.InputBegan:Connect(function(input)
+  if input.KeyCode == Enum.KeyCode.F then
+    togglePlatformStanding()
+  end
+end)
+
+-- How to use the script:
+
+1. Insert a LocalScript into your game.
+2. Paste the above code into the LocalScript.
+
+-- How to adjust the walk speed:
+
+- Change the value `16` in the line `humanoid.WalkSpeed = isStandingOnPlatforms and 0 or 16` to your desired walk speed when not standing on platforms.
